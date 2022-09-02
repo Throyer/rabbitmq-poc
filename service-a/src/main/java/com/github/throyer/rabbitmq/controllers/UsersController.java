@@ -1,7 +1,12 @@
 package com.github.throyer.rabbitmq.controllers;
 
+import static org.springframework.http.ResponseEntity.ok;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -15,8 +20,9 @@ public class UsersController {
   @Autowired
   private UsersService service;
 
-  @GetMapping
-  public User create(String name) {
-    return service.create(name);
+  @PostMapping
+  public ResponseEntity<User> update(@RequestBody @Validated User body) {
+      var user = service.create(body.getName());
+      return ok(user);
   }
 }

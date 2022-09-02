@@ -8,9 +8,9 @@ services:
     ports:
       - "${RABBITMQ_PORT}:5672"
       - "${RABBITMQ_CLIENT_WEB_PORT}:15672"
-    environment:
-      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USERNAME}
-      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD}
+    volumes:
+      - ./configurations/rabbitmq/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf:ro
+      - ./configurations/rabbitmq/definitions.json:/etc/rabbitmq/definitions.json:ro
     networks:
       - rabbitmq-poc-network
     tty: true
@@ -36,7 +36,6 @@ services:
 
   service-a:
     image: maven:3.8.5-openjdk-17
-    restart: unless-stopped
     container_name: service-a
     ports:
       - "${SERVICE_A_PORT}:${SERVICE_A_PORT}"
@@ -50,9 +49,6 @@ services:
     tty: true
     environment:
       TZ: ${TIMEZONE}
-      DB_URL: ${DB_URL}
-      DB_USERNAME: ${DB_USERNAME}
-      DB_PASSWORD: ${DB_PASSWORD}
       RABBITMQ_HOST: ${RABBITMQ_HOST}
       RABBITMQ_USERNAME: ${RABBITMQ_USERNAME}
       RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD}
@@ -65,7 +61,6 @@ services:
 
   service-b:
     image: maven:3.8.5-openjdk-17
-    restart: unless-stopped
     container_name: service-b
     links:
       - database
@@ -77,6 +72,10 @@ services:
       DB_URL: ${DB_URL}
       DB_USERNAME: ${DB_USERNAME}
       DB_PASSWORD: ${DB_PASSWORD}
+      RABBITMQ_HOST: ${RABBITMQ_HOST}
+      RABBITMQ_USERNAME: ${RABBITMQ_USERNAME}
+      RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD}
+      RABBITMQ_PORT: ${RABBITMQ_PORT}
     volumes:
       - ../service-b:/app
       - ./.volumes/maven:/root/.m2

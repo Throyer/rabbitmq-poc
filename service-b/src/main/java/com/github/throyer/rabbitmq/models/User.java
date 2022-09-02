@@ -1,7 +1,15 @@
 package com.github.throyer.rabbitmq.models;
 
-import javax.validation.constraints.NotEmpty;
+import static javax.persistence.GenerationType.IDENTITY;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "user")
 public class User {
   public User() { }
 
@@ -9,9 +17,11 @@ public class User {
     this.name = name;
   }
 
+  @Id
+  @GeneratedValue(strategy = IDENTITY)
   private Long id;
 
-  @NotEmpty
+  @Column(name = "name", nullable = false)
   private String name;
 
   public Long getId() {
