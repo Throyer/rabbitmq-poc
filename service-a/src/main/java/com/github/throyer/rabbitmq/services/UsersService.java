@@ -2,6 +2,7 @@ package com.github.throyer.rabbitmq.services;
 
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import com.github.throyer.rabbitmq.models.User;
@@ -9,6 +10,7 @@ import com.github.throyer.rabbitmq.models.User;
 @Service
 public class UsersService {
   @Autowired
+  @Qualifier("rabbitmq-template")
 	private AmqpTemplate rabbitmq;
 
   public User create(String name) {
