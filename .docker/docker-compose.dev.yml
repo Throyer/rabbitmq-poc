@@ -5,9 +5,6 @@ services:
     image: rabbitmq:3.10.7-management
     restart: unless-stopped
     container_name: queues
-    environment:
-      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USERNAME}
-      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD}
     ports:
       - "${RABBITMQ_PORT}:5672"
       - "${RABBITMQ_CLIENT_WEB_PORT}:15672"
