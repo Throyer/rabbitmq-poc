@@ -1,0 +1,94 @@
+version: '3'
+services:
+
+  rabbitmq:
+    image: rabbitmq:3.10.7-management
+    restart: unless-stopped
+    container_name: queues
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USERNAME}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD}
+    ports:
+      - "${RABBITMQ_PORT}:5672"
+      - "${RABBITMQ_CLIENT_WEB_PORT}:15672"
+    volumes:
+      - ./configurations/rabbitmq/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf:ro
+      - ./configurations/rabbitmq/definitions.json:/etc/rabbitmq/definitions.json:ro
+    networks:
+      - rabbitmq-poc-network
+    tty: true
+
+  database:
+    image: postgres:13
+    restart: unless-stopped
+    container_name: database
+    command: ["postgres", "-c", "log_statement=all", "-c", "log_destination=stderr"]
+    ports:
+      - "${DB_PORT}:5432"
+    environment:
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+      TZ: ${TIMEZONE}
+      PGTZ: ${TIMEZONE}
+    volumes:
+      - ./.volumes/database:/var/lib/postgresql/data
+    networks:
+      - rabbitmq-poc-network
+    tty: true
+
+  service-a:
+    image: maven:3.8.5-openjdk-17
+    restart: unless-stopped
+    container_name: service-a
+    ports:
+      - "${SERVICE_A_PORT}:${SERVICE_A_PORT}"
+      - "${SERVICE_A_DEBUG_PORT}:${SERVICE_A_DEBUG_PORT}"
+    volumes:
+      - ../service-a:/app
+      - ./.volumes/maven:/root/.m2
+    working_dir: /app
+    networks:
+      - rabbitmq-poc-network
+    tty: true
+    environment:
+      TZ: ${TIMEZONE}
+      DB_URL: ${DB_URL}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+    entrypoint: [
+      "mvn",
+      "spring-boot:run",
+      "-Dspring-boot.run.jvmArguments=\"-agentlib:jdwp=transport=dt_socket,server=y,address=*:${SERVICE_A_DEBUG_PORT},server=y,suspend=n\""
+    ]
+
+  service-b:
+    image: maven:3.8.5-openjdk-17
+    restart: unless-stopped
+    container_name: service-b
+    links:
+      - database
+    ports:
+      - "${SERVICE_B_PORT}:${SERVICE_B_PORT}"
+      - "${SERVICE_B_DEBUG_PORT}:${SERVICE_B_DEBUG_PORT}"
+    environment:
+      TZ: ${TIMEZONE}
+      DB_URL: ${DB_URL}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - ../service-b:/app
+      - ./.volumes/maven:/root/.m2
+    working_dir: /app
+    networks:
+      - rabbitmq-poc-network
+    tty: true
+    entrypoint: [
+      "mvn",
+      "spring-boot:run",
+      "-Dspring-boot.run.jvmArguments=\"-agentlib:jdwp=transport=dt_socket,server=y,address=*:${SERVICE_B_DEBUG_PORT},server=y,suspend=n\""
+    ]
+
+networks:
+  rabbitmq-poc-network:
+    driver: bridge

@@ -1,0 +1,33 @@
+service-*/target/
+service-*/!.mvn/wrapper/maven-wrapper.jar
+service-*/!**/src/main/**/target/
+service-*/!**/src/test/**/target/
+
+### STS ###
+service-*/.apt_generated
+service-*/.classpath
+service-*/.factorypath
+service-*/.project
+service-*/.settings
+service-*/.springBeans
+service-*/.sts4-cache
+
+### IntelliJ IDEA ###
+service-*/.idea
+service-*/*.iws
+service-*/*.iml
+service-*/*.ipr
+
+### NetBeans ###
+service-*/nbproject/private/
+service-*/nbbuild/
+service-*/dist/
+service-*/nbdist/
+service-*/.nb-gradle/
+service-*/build/
+service-*/!**/src/main/**/build/
+service-*/!**/src/test/**/build/
+
+### doker  ###
+.docker/.env
+.docker/.volumes/
