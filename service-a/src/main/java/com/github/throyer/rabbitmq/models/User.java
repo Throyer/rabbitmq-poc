@@ -1,8 +1,12 @@
 package com.github.throyer.rabbitmq.models;
 
+import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
+
 import java.util.Optional;
 
 import javax.validation.constraints.NotEmpty;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 public class User {
   public User() { }
@@ -11,11 +15,12 @@ public class User {
     this.name = name;
   }
 
+  @JsonInclude(NON_NULL)
   private Long id;
-
+  
   @NotEmpty
   private String name;
-
+  
   public Long getId() {
     return id;
   }
