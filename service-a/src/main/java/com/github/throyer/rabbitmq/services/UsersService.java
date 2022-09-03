@@ -7,7 +7,10 @@ import org.springframework.stereotype.Service;
 
 import com.github.throyer.rabbitmq.models.User;
 
+import lombok.extern.log4j.Log4j2;
+
 @Service
+@Log4j2
 public class UsersService {
   @Autowired
   @Qualifier("rabbitmq-template")
@@ -15,7 +18,8 @@ public class UsersService {
 
   public User create(String name) {
     var user = new User(name);
-    rabbitmq.convertSendAndReceive("users", user);
+    rabbitmq.convertAndSend("users", user);
+    log.info("usuário {} enviado com sucesso", user);
     return user;
   }
 }

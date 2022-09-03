@@ -1,5 +1,7 @@
 package com.github.throyer.rabbitmq.models;
 
+import java.util.Optional;
+
 import javax.validation.constraints.NotEmpty;
 
 public class User {
@@ -28,5 +30,10 @@ public class User {
 
   public void setName(String name) {
     this.name = name;
+  }
+
+  @Override
+  public String toString() {
+      return Optional.ofNullable(name).orElse("null");
   }
 }

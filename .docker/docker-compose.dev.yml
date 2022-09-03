@@ -69,6 +69,7 @@ services:
       - "${SERVICE_B_DEBUG_PORT}:${SERVICE_B_DEBUG_PORT}"
     environment:
       TZ: ${TIMEZONE}
+      DB_SHOW_SQL: "false"
       DB_URL: ${DB_URL}
       DB_USERNAME: ${DB_USERNAME}
       DB_PASSWORD: ${DB_PASSWORD}
