@@ -1,6 +1,6 @@
 # RabbitMQ + Spring Boot simple example
 <p align="center">
-  <a href="https://github.com/Throyer" target="blank">
+  <a href="https://github.com/Throyer/rabbitmq-poc" target="blank">
     <img src="./assets/infra.jpg" width="560" alt="Tecnologias" />
   </a>
 </p>
