@@ -8,9 +8,9 @@ services:
     ports:
       - "${RABBITMQ_PORT}:5672"
       - "${RABBITMQ_CLIENT_WEB_PORT}:15672"
-    volumes:
-      - ./configurations/rabbitmq/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf:ro
-      - ./configurations/rabbitmq/definitions.json:/etc/rabbitmq/definitions.json:ro
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USERNAME}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD}
     networks:
       - rabbitmq-poc-network
     tty: true
@@ -29,7 +29,7 @@ services:
       TZ: ${TIMEZONE}
       PGTZ: ${TIMEZONE}
     volumes:
-      - ./.volumes/database:/var/lib/postgresql/data
+      - ~/.volumes/database/postgresql:/var/lib/postgresql/data
     networks:
       - rabbitmq-poc-network
     tty: true
@@ -42,8 +42,11 @@ services:
       - "${SERVICE_A_DEBUG_PORT}:${SERVICE_A_DEBUG_PORT}"
     volumes:
       - ../service-a:/app
-      - ./.volumes/maven:/root/.m2
+      - ~/.m2:/root/.m2
     working_dir: /app
+    links:
+      - database
+      - rabbitmq
     networks:
       - rabbitmq-poc-network
     tty: true
@@ -56,7 +59,7 @@ services:
     entrypoint: [
       "mvn",
       "spring-boot:run",
-      "-Dspring-boot.run.jvmArguments=\"-agentlib:jdwp=transport=dt_socket,server=y,address=*:${SERVICE_A_DEBUG_PORT},server=y,suspend=n\""
+      '-Dspring-boot.run.jvmArguments="-agentlib:jdwp=transport=dt_socket,server=y,address=*:${SERVICE_A_DEBUG_PORT},server=y,suspend=n"'
     ]
 
   service-b:
@@ -64,6 +67,7 @@ services:
     container_name: service-b
     links:
       - database
+      - rabbitmq
     ports:
       - "${SERVICE_B_PORT}:${SERVICE_B_PORT}"
       - "${SERVICE_B_DEBUG_PORT}:${SERVICE_B_DEBUG_PORT}"
@@ -79,7 +83,7 @@ services:
       RABBITMQ_PORT: ${RABBITMQ_PORT}
     volumes:
       - ../service-b:/app
-      - ./.volumes/maven:/root/.m2
+      - ~/.m2:/root/.m2
     working_dir: /app
     networks:
       - rabbitmq-poc-network
@@ -87,7 +91,7 @@ services:
     entrypoint: [
       "mvn",
       "spring-boot:run",
-      "-Dspring-boot.run.jvmArguments=\"-agentlib:jdwp=transport=dt_socket,server=y,address=*:${SERVICE_B_DEBUG_PORT},server=y,suspend=n\""
+      '-Dspring-boot.run.jvmArguments="-agentlib:jdwp=transport=dt_socket,server=y,address=*:${SERVICE_B_DEBUG_PORT},server=y,suspend=n"'
     ]
 
 networks:

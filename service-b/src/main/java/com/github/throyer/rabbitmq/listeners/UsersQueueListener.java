@@ -17,7 +17,7 @@ public class UsersQueueListener {
   @Autowired
   private CreateUserService createUserService;
 
-  @RabbitListener(queues =  "users", containerFactory = "rabbitmq-container")
+  @RabbitListener(queues =  "users-queue", containerFactory = "rabbitmq-container")
   public void users(User user) {
     createUserService.create(user);
     log.info("usuário criado com sucesso \n{}", JSON.stringify(user));

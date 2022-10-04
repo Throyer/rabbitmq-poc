@@ -18,7 +18,7 @@ public class UsersService {
 
   public User create(String name) {
     var user = new User(name);
-    rabbitmq.convertAndSend("users", user);
+    rabbitmq.convertAndSend("users-exchange", "", user);
     log.info("usuário {} enviado com sucesso", user);
     return user;
   }
