@@ -37,7 +37,10 @@ services:
     tty: true
 
   service-a:
-    image: maven:3.8.5-openjdk-17
+    build: 
+      context: ../service-a
+      dockerfile: ../service-a/docker/Dockerfile.dev
+    image: throyer/rabbitmq-poc/service-a:latest
     container_name: service-a
     ports:
       - "${SERVICE_A_PORT}:${SERVICE_A_PORT}"
@@ -62,13 +65,21 @@ services:
       RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD}
       RABBITMQ_PORT: ${RABBITMQ_PORT}
     entrypoint: [
+      "dockerize",
+      "-wait",
+      "tcp://rabbitmq:${RABBITMQ_PORT}",
+      "-timeout",
+      "20s",
       "mvn",
       "spring-boot:run",
       '-Dspring-boot.run.jvmArguments="-agentlib:jdwp=transport=dt_socket,server=y,address=*:${SERVICE_A_DEBUG_PORT},server=y,suspend=n"'
     ]
 
   service-b:
-    image: maven:3.8.5-openjdk-17
+    build: 
+      context: ../service-b
+      dockerfile: ../service-b/docker/Dockerfile.dev
+    image: throyer/rabbitmq-poc/service-b:latest
     container_name: service-b
     links:
       - database
@@ -82,7 +93,9 @@ services:
     environment:
       TZ: ${TIMEZONE}
       DB_SHOW_SQL: "false"
-      DB_URL: ${DB_URL}
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+      DB_NAME: ${DB_NAME}
       DB_USERNAME: ${DB_USERNAME}
       DB_PASSWORD: ${DB_PASSWORD}
       RABBITMQ_HOST: ${RABBITMQ_HOST}
@@ -97,6 +110,13 @@ services:
       - rabbitmq-poc-network
     tty: true
     entrypoint: [
+      "dockerize",
+      "-wait",
+      "tcp://database:${DB_PORT}",
+      "-wait",
+      "tcp://rabbitmq:${RABBITMQ_PORT}",
+      "-timeout",
+      "20s",
       "mvn",
       "spring-boot:run",
       '-Dspring-boot.run.jvmArguments="-agentlib:jdwp=transport=dt_socket,server=y,address=*:${SERVICE_B_DEBUG_PORT},server=y,suspend=n"'

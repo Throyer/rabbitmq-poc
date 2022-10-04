@@ -14,7 +14,7 @@
 
   - start containers
     ```
-    .docker/scripts/develop-compose up -d
+    .docker/scripts/develop-compose up -d --build
     ```
 
   - show logs
