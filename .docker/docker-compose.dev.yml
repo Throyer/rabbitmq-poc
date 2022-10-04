@@ -28,6 +28,8 @@ services:
       POSTGRES_DB: ${DB_NAME}
       TZ: ${TIMEZONE}
       PGTZ: ${TIMEZONE}
+    depends_on:
+      - rabbitmq
     volumes:
       - ~/.volumes/database/postgresql:/var/lib/postgresql/data
     networks:
@@ -45,6 +47,9 @@ services:
       - ~/.m2:/root/.m2
     working_dir: /app
     links:
+      - database
+      - rabbitmq
+    depends_on:
       - database
       - rabbitmq
     networks:
@@ -66,6 +71,9 @@ services:
     image: maven:3.8.5-openjdk-17
     container_name: service-b
     links:
+      - database
+      - rabbitmq
+    depends_on:
       - database
       - rabbitmq
     ports:
