@@ -2,6 +2,8 @@ package com.github.throyer.rabbitmq.models;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
+import java.util.Optional;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -38,5 +40,10 @@ public class User {
 
   public void setName(String name) {
     this.name = name;
+  }
+
+  @Override
+  public String toString() {
+    return Optional.ofNullable(name).orElse("null");
   }
 }
