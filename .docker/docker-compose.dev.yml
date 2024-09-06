@@ -47,7 +47,7 @@ services:
       - "${SERVICE_A_DEBUG_PORT}:${SERVICE_A_DEBUG_PORT}"
     volumes:
       - ../service-a:/app
-      - ~/.m2:/root/.m2
+      - ~/.m2/repository:/root/.m2/repository
     working_dir: /app
     links:
       - database
@@ -104,7 +104,7 @@ services:
       RABBITMQ_PORT: ${RABBITMQ_PORT}
     volumes:
       - ../service-b:/app
-      - ~/.m2:/root/.m2
+      - ~/.m2/repository:/root/.m2/repository
     working_dir: /app
     networks:
       - rabbitmq-poc-network

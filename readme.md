@@ -14,12 +14,12 @@
 
   - start containers
     ```
-    .docker/scripts/develop-compose up -d --build
+    .docker/scripts/develop up -d --build
     ```
 
   - show logs
     ```
-    .docker/scripts/develop-compose logs -f service-a service-b
+    .docker/scripts/develop logs -f service-a service-b
     ```
 
   - send user to `Service A`

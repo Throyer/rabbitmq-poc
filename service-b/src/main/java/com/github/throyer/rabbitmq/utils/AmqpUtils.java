@@ -3,12 +3,17 @@ package com.github.throyer.rabbitmq.utils;
 import static java.util.Objects.nonNull;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
-public class RetryUtils {
-  private RetryUtils() { }
+public class AmqpUtils {
+  public static final String RABBITMQ_DEATH_HEADER_NAME = "x-death";
+  public static final String DEFAULT_ALGORITHM = "TLSv1.2";
+  public static final String DEATH_COUNT_KEY_NAME = "count";
+  
+  private AmqpUtils() { }
 
   public static Boolean hasExceededRetryLimit(HashMap<String, ?> properties, Long maxAttempts) {
     if (nonNull(properties) && !properties.isEmpty()) {
@@ -18,5 +23,12 @@ public class RetryUtils {
       return count >= maxAttempts;
     }
     return false;
+  }
+
+  public static Long extractDeathCount(Map<String, ?> properties) {
+    if (nonNull(properties) && !properties.isEmpty()) {
+      return (Long) properties.get(DEATH_COUNT_KEY_NAME);
+    }
+    return 0L;
   }
 }

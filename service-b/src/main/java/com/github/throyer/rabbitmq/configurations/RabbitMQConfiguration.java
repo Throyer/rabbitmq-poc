@@ -51,7 +51,6 @@ public class RabbitMQConfiguration {
     SimpleRabbitListenerContainerFactoryConfigurer configurer
   ) {
     var container = new SimpleRabbitListenerContainerFactory();
-    container.setMessageConverter(converter());
     container.setConnectionFactory(connection);
     container.setAcknowledgeMode(AcknowledgeMode.MANUAL);
     return container;

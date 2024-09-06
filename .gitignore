@@ -13,6 +13,7 @@ service-*/.springBeans
 service-*/.sts4-cache
 
 ### IntelliJ IDEA ###
+*.idea
 service-*/.idea
 service-*/*.iws
 service-*/*.iml
