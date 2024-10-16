@@ -1,5 +1,6 @@
 package com.github.throyer.rabbitmq.shared;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.rabbitmq.client.Channel;
 import lombok.Getter;
 
@@ -13,8 +14,10 @@ import java.util.Map;
 import static com.github.throyer.rabbitmq.utils.AmqpUtils.extractDeathCount;
 
 public class ChannelManager {
-  
+  @JsonIgnore
   private final Channel channel;
+  
+  @JsonIgnore
   private final MessageProperties properties;
 
   @Getter

@@ -1,22 +1,27 @@
 package com.github.throyer.rabbitmq.models;
 
+import com.github.throyer.rabbitmq.dtos.UserDto;
+import lombok.Getter;
+import lombok.Setter;
+
+import static java.lang.String.valueOf;
 import static javax.persistence.GenerationType.IDENTITY;
 
 import java.util.Optional;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "user")
+@Getter
+@Setter
 public class User {
   public User() { }
 
-  public User(String name) {
-    this.name = name;
+  public User(UserDto dto) {
+    this.name = dto.getName();
   }
 
   @Id
@@ -25,25 +30,9 @@ public class User {
 
   @Column(name = "name", nullable = false)
   private String name;
-
-  public Long getId() {
-    return id;
-  }
-
-  public void setId(Long id) {
-    this.id = id;
-  }
-
-  public String getName() {
-    return name;
-  }
-
-  public void setName(String name) {
-    this.name = name;
-  }
-
+    
   @Override
   public String toString() {
-    return Optional.ofNullable(name).orElse("null");
+    return valueOf(name);
   }
 }

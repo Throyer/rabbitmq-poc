@@ -6,6 +6,7 @@ import static org.springframework.amqp.core.AcknowledgeMode.MANUAL;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
+import javax.validation.Validator;
 
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
@@ -28,18 +29,21 @@ public class CustomListenersConfiguration {
     GenericApplicationContext context,
     @Qualifier("rabbitmq-connection") ConnectionFactory connection,
     RabbitMQProperties properties,
-    List<SimpleRetryListener<?>> listeners
+    List<SimpleRetryListener<?>> listeners,
+    Validator validator
   ) {
     this.context = context;
     this.connection = connection;
     this.properties = properties;
     this.listeners = listeners;
+    this.validator = validator;
   }
 
   private final GenericApplicationContext context;
   private final ConnectionFactory connection;
   private final RabbitMQProperties properties;
   private final List<SimpleRetryListener<?>> listeners;
+  private final Validator validator;
 
   @PostConstruct
   private void create() {
@@ -61,7 +65,7 @@ public class CustomListenersConfiguration {
         context.registerBean(
           name,
           type,
-          () -> container(listener, connection, listenerSettings)
+          () -> container(listener, connection, listenerSettings, validator)
         );
       } catch (Exception exception) {
         log.error("não foi possível fazer a configuração de listener, erro: {}", exception.getMessage());
@@ -72,7 +76,8 @@ public class CustomListenersConfiguration {
   public static <T> SimpleMessageListenerContainer container(
     SimpleRetryListener<T> listener,
     ConnectionFactory connectionFactory,
-    ListenerSettings listenerSettings
+    ListenerSettings listenerSettings,
+    Validator validator
   ) {
     var container = new SimpleMessageListenerContainer();
     var queueSettings = listener.getSettings();
@@ -82,7 +87,7 @@ public class CustomListenersConfiguration {
     container.setAcknowledgeMode(MANUAL);
     container.setConcurrentConsumers(listenerSettings.getConcurrentConsumers());
     container.setPrefetchCount(listenerSettings.getPrefetch());
-    container.setMessageListener(new RetryManager<>(listener));
+    container.setMessageListener(new RetryManager<>(listener, validator));
     return container;
   }
 }

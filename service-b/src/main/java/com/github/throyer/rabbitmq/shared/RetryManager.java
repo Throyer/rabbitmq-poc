@@ -7,6 +7,7 @@ import static java.util.Objects.isNull;
 
 import java.io.IOException;
 
+import lombok.AllArgsConstructor;
 import org.springframework.amqp.rabbit.listener.api.ChannelAwareMessageListener;
 
 import com.github.throyer.rabbitmq.errors.NotRetryableFailureException;
@@ -14,14 +15,13 @@ import com.rabbitmq.client.Channel;
 
 import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
-public class RetryManager<T> implements ChannelAwareMessageListener {
-  public RetryManager(SimpleRetryListener<T> listener) {
-    super();
-    this.listener = listener;
-  }
+import javax.validation.Validator;
 
+@Slf4j
+@AllArgsConstructor
+public class RetryManager<T> implements ChannelAwareMessageListener {
   private final SimpleRetryListener<T> listener;
+  private final Validator validator;
 
   @Override
   public void onMessage(org.springframework.amqp.core.Message content, Channel channel) throws Exception {
@@ -31,7 +31,7 @@ public class RetryManager<T> implements ChannelAwareMessageListener {
       listener.getSettings().getMaxRetryAttempts()
     );
 
-    var body = parse(manager, content, listener);
+    var body = parse(manager, content, validator, listener);
     
     if (isNull(body)) {
       return;
@@ -78,11 +78,23 @@ public class RetryManager<T> implements ChannelAwareMessageListener {
   public static <T> T parse(
     ChannelManager manager,
     org.springframework.amqp.core.Message message,
+    Validator validator,
     SimpleRetryListener<T> listener
   ) throws IOException {
     try {
-      var content = new String(message.getBody());
-      return listener.parse(content);
+      var content = new String(message.getBody());      
+      var body = listener.parse(content);      
+      var violations = validator.validate(body);
+      
+      if (!violations.isEmpty()) {
+        var errors = violations.stream().map(Error::new).toList();
+        manager.doAck();
+        listener.onMaxRetryAttempts(new Fail<>(errors, body));
+        log.error("Erro ao fazer o parse. Payload invalido.");
+        return null;
+      }
+      
+      return body;
     } catch (Exception exception) {
       manager.doAck();
       listener.onMaxRetryAttempts(new Fail<>(exception, null));

@@ -1,5 +1,6 @@
 package com.github.throyer.rabbitmq.listeners;
 
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,21 +16,15 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
+@AllArgsConstructor
 public class OrdersQueueListener implements SimpleRetryListener<Order> {
-
-  @Autowired
-  private RabbitMQProperties settings;
+  private final RabbitMQProperties settings;
 
   @Override
   public QueueSettings getSettings() {
     return settings.get("orders");
   }
-
-  @Override
-  public Order parse(String message) {
-    return JSON.parse(message, Order.class);
-  }
-
+  
   @Override
   public void onMessage(Message<Order> message) {
     log.info("receive order: {}", JSON.stringify(message));
@@ -37,6 +32,6 @@ public class OrdersQueueListener implements SimpleRetryListener<Order> {
 
   @Override
   public void onMaxRetryAttempts(Fail<Order> fail) {
-    log.error("não foi possivel processar order.");
+    log.error("não foi possível processar order.");
   }
 }

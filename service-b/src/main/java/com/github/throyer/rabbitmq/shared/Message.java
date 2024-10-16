@@ -8,7 +8,7 @@ public class Message<T> {
 
   @Getter
   private final T body;
-  
+
   @JsonIgnore
   private final ChannelManager channel;
 

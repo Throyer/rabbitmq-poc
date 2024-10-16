@@ -1,5 +1,6 @@
 package com.github.throyer.rabbitmq.services;
 
+import com.github.throyer.rabbitmq.dtos.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,8 +16,8 @@ public class CreateUserService {
   @Autowired
   private UsersRepository repository;
 
-  public User create(User user) {
-    var created = repository.save(user);
+  public User create(UserDto dto) {
+    var created = repository.save(new User(dto));
     log.info("usuário criado com sucesso \n{}", JSON.stringify(created));
     return created;
   }

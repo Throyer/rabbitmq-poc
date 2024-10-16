@@ -50,7 +50,7 @@ public class UsersQueue implements DeclareQueue {
     admin.declareQueue(usersRetryQueue);
     admin.declareQueue(usersDeadLetterQueue);
 
-    admin.declareBinding(bind(usersQueue).to(exchange).with(dlq.getRoutingKey()));
+    admin.declareBinding(bind(usersQueue).to(exchange).with(queue.getRoutingKey()));
     admin.declareBinding(bind(usersRetryQueue).to(exchange).with(retry.getRoutingKey()));
     admin.declareBinding(bind(usersDeadLetterQueue).to(exchange).with(dlq.getRoutingKey()));
   }
