@@ -13,7 +13,7 @@ public class QueueSettings {
 
   private String alias;
 
-  private Long retryDelayInMilliseconds;
+  private Integer retryDelayInMilliseconds;
   private Long maxRetryAttempts;
 
   private Queue queue;
@@ -27,8 +27,10 @@ public class QueueSettings {
   @Getter
   @Setter
   public static class Queue {
-    private String routingKey;
     private String exchangeName;
     private String queueName;
+    private String routingKey;
+    private String deadLetterExchange;
+    private String deadLetterRoutingKey;
   }
 }

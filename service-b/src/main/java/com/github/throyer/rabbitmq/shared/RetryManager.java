@@ -4,12 +4,9 @@ import static com.github.throyer.rabbitmq.shared.ChannelManager.create;
 import static com.github.throyer.rabbitmq.utils.Time.elapsedMilliseconds;
 import static java.lang.System.nanoTime;
 import static java.util.Objects.isNull;
-import static org.springframework.amqp.core.AcknowledgeMode.MANUAL;
 
 import java.io.IOException;
 
-import org.springframework.amqp.rabbit.connection.ConnectionFactory;
-import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
 import org.springframework.amqp.rabbit.listener.api.ChannelAwareMessageListener;
 
 import com.github.throyer.rabbitmq.errors.NotRetryableFailureException;
@@ -92,22 +89,5 @@ public class RetryManager<T> implements ChannelAwareMessageListener {
       log.error("Erro ao fazer o parse. Descartando da mensagem. {}", exception.getMessage());
       return null;
     }
-  }
-
-  public static <T> SimpleMessageListenerContainer container(
-    SimpleRetryListener<T> listener,
-    ConnectionFactory connectionFactory,
-    ListenerSettings listenerSettings
-  ) {
-    var container = new SimpleMessageListenerContainer();
-    var queueSettings = listener.getSettings();
-    container.setConnectionFactory(connectionFactory);
-    container.setQueueNames(queueSettings.getQueue().getQueueName());
-    container.setDefaultRequeueRejected(listenerSettings.getDefaultRequeueRejected());
-    container.setAcknowledgeMode(MANUAL);
-    container.setConcurrentConsumers(listenerSettings.getConcurrentConsumers());
-    container.setPrefetchCount(listenerSettings.getPrefetch());
-    container.setMessageListener(new RetryManager<>(listener));
-    return container;
   }
 }

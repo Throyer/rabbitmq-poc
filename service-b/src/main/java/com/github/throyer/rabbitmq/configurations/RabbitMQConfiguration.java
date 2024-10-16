@@ -15,13 +15,13 @@ import org.springframework.boot.autoconfigure.amqp.SimpleRabbitListenerContainer
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.github.throyer.rabbitmq.shared.UsersAmqpProperties;
+import com.github.throyer.rabbitmq.shared.RabbitMQProperties;
 
 @Configuration
 public class RabbitMQConfiguration {  
   @Bean("rabbitmq-connection")
   public CachingConnectionFactory connection(
-    UsersAmqpProperties settings    
+    RabbitMQProperties settings    
   ) throws NoSuchAlgorithmException, KeyManagementException {
     var connection = settings.getConnection();
     return connection.getConnectionFactory();

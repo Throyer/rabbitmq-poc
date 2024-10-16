@@ -11,7 +11,7 @@ import com.github.throyer.rabbitmq.shared.Fail;
 import com.github.throyer.rabbitmq.shared.Message;
 import com.github.throyer.rabbitmq.shared.QueueSettings;
 import com.github.throyer.rabbitmq.shared.SimpleRetryListener;
-import com.github.throyer.rabbitmq.shared.UsersAmqpProperties;
+import com.github.throyer.rabbitmq.shared.RabbitMQProperties;
 import com.github.throyer.rabbitmq.utils.JSON;
 
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 public class UsersQueueListener implements SimpleRetryListener<User> {
 
   @Autowired
-  private UsersAmqpProperties settings;
+  private RabbitMQProperties settings;
 
   @Autowired
   private CreateUserService service;

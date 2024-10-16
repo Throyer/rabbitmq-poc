@@ -12,8 +12,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @Component
-@ConfigurationProperties(prefix = "rabbitmq.user")
-public class UsersAmqpProperties {
+@ConfigurationProperties(prefix = "rabbitmq.settings")
+public class RabbitMQProperties {
   @NestedConfigurationProperty
   private ConnectionSettings connection;
 
