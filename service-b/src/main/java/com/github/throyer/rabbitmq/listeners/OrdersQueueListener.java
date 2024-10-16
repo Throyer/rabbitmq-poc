@@ -29,9 +29,4 @@ public class OrdersQueueListener implements SimpleRetryListener<Order> {
   public void onMessage(Message<Order> message) {
     log.info("receive order: {}", JSON.stringify(message));
   }
-
-  @Override
-  public void onMaxRetryAttempts(Fail<Order> fail) {
-    log.error("não foi possível processar order.");
-  }
 }

@@ -11,9 +11,9 @@ import static java.util.Objects.isNull;
 import java.io.IOException;
 import java.util.Map;
 
-import static com.github.throyer.rabbitmq.utils.AmqpUtils.extractDeathCount;
-
 public class ChannelManager {
+  static final String DEATH_COUNT_KEY_NAME = "count";
+  
   @JsonIgnore
   private final Channel channel;
   
@@ -58,15 +58,21 @@ public class ChannelManager {
       return 0L;
     }
     
-    var deathHeaders = properties.getXDeathHeader();
-    var expiredDeaths = deathHeaders.stream().filter(this::isDeathHeader)
+    var deaths = properties.getXDeathHeader();
+    var expires = deaths.stream().filter(this::isDeathHeader)
       .findFirst();
 
-    if (expiredDeaths.isEmpty()) {
+    if (expires.isEmpty()) {
       return 0L;
     }
     
-    return extractDeathCount(expiredDeaths.get());
+    var header = expires.get();
+
+    if (!header.isEmpty()) {
+      return (Long) header.get(DEATH_COUNT_KEY_NAME);
+    }
+    
+    return 0L;
   }
 
   public Boolean alreadyReachedMaxOfAttempts() {

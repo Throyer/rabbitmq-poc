@@ -7,7 +7,8 @@ import java.lang.reflect.ParameterizedType;
 public interface SimpleRetryListener<T> {
   QueueSettings getSettings();
   void onMessage(Message<T> message);
-  void onMaxRetryAttempts(Fail<T> fail);
+  
+  default void onMaxRetryAttempts(Fail<T> fail) { }
 
   @SuppressWarnings("unchecked")
   default T parse(String message) {
