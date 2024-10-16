@@ -9,11 +9,11 @@ import org.springframework.amqp.core.Exchange;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.stereotype.Component;
 
-import com.github.throyer.rabbitmq.shared.Declare;
+import com.github.throyer.rabbitmq.shared.DeclareQueue;
 import com.github.throyer.rabbitmq.shared.QueueSettings;
 
 @Component
-public class OrdersQueue implements Declare {
+public class OrdersQueue implements DeclareQueue {
 
   @Override
   public String getAlias() {

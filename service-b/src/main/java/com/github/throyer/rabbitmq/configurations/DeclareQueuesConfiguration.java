@@ -9,7 +9,7 @@ import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Configuration;
 
-import com.github.throyer.rabbitmq.shared.Declare;
+import com.github.throyer.rabbitmq.shared.DeclareQueue;
 import com.github.throyer.rabbitmq.shared.RabbitMQProperties;
 
 import lombok.extern.slf4j.Slf4j;
@@ -19,12 +19,12 @@ import lombok.extern.slf4j.Slf4j;
 public class DeclareQueuesConfiguration {
   private final RabbitAdmin admin;
   private final RabbitMQProperties properties;
-  private final List<Declare> declares;
+  private final List<DeclareQueue> declares;
 
   public DeclareQueuesConfiguration(
     @Qualifier("rabbitmq-connection") ConnectionFactory connection,
     RabbitMQProperties properties,
-    List<Declare> declares
+    List<DeclareQueue> declares
   ) {
     this.admin = new RabbitAdmin(connection);
     this.properties = properties;

@@ -8,11 +8,11 @@ import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.stereotype.Component;
 
-import com.github.throyer.rabbitmq.shared.Declare;
+import com.github.throyer.rabbitmq.shared.DeclareQueue;
 import com.github.throyer.rabbitmq.shared.QueueSettings;
 
 @Component
-public class UsersQueue implements Declare {
+public class UsersQueue implements DeclareQueue {
 
   @Override
   public String getAlias() {
