@@ -25,9 +25,9 @@ public class AmqpUtils {
     return false;
   }
 
-  public static Long extractDeathCount(Map<String, ?> properties) {
-    if (nonNull(properties) && !properties.isEmpty()) {
-      return (Long) properties.get(DEATH_COUNT_KEY_NAME);
+  public static Long extractDeathCount(Map<String, ?> headers) {
+    if (nonNull(headers) && !headers.isEmpty()) {
+      return (Long) headers.get(DEATH_COUNT_KEY_NAME);
     }
     return 0L;
   }

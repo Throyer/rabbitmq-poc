@@ -24,5 +24,6 @@
   ],
   "java.import.exclusions": [
     "**/.*"
-  ]
+  ],
+  "java.compile.nullAnalysis.mode": "disabled"
 }

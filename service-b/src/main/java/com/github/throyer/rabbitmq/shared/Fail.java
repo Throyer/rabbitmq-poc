@@ -8,19 +8,18 @@ import java.time.LocalDateTime;
 import static java.time.format.DateTimeFormatter.ISO_DATE_TIME;
 
 @Getter
-public class DlqMessage<T> {
+public class Fail<T> {
   @JsonIgnore
-  private final Exception exception;
-  
+  private final Exception cause;  
   private final String error;
   private final String createdAt;
   private final T body;
 
-  public DlqMessage(
+  public Fail(
     Exception exception,
     T body
   ) {
-    this.exception = exception;
+    this.cause = exception;
     this.error = exception.getMessage();
     this.createdAt = LocalDateTime.now().format(ISO_DATE_TIME);
     this.body = body;

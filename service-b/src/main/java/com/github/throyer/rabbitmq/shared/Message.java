@@ -7,18 +7,22 @@ public class Message<T> {
   @Getter
   private final T body;
   
-  private final RetryManager manager;
+  private final ChannelManager channel;
 
-  public Message(T body, RetryManager manager) {
+  public Message(T body, ChannelManager manager) {
     this.body = body;
-    this.manager = manager;  
+    this.channel = manager;  
   }
   
   public long getDeathCount() {
-    return manager.getDeathCount();
+    return channel.getDeathCount();
+  }
+
+  public long getCurrentAttempt() {
+    return channel.getCurrentAttempt();
   }
 
   public Boolean alreadyReachedMaxOfAttempts() {
-    return manager.alreadyReachedMaxOfAttempts();
+    return channel.alreadyReachedMaxOfAttempts();
   }
 }
